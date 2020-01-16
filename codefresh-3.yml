@@ -1,0 +1,26 @@
+version: "1.0"
+stages:
+  - prepare
+  - test
+  - build
+steps:
+  main_clone:
+    type: "git-clone"
+    stage: prepare
+    description: "Cloning main repository..."
+    repo: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
+    revision: "${{CF_BRANCH}}"
+  run_unit_tests:
+    title: Compile/Unit test
+    stage: test
+    image: 'maven:3.5.2-jdk-8-alpine'
+    commands:
+      - mvn -Dmaven.repo.local=/codefresh/volume/m2_repository package
+  build_app_image:
+    title: Building Docker Image
+    type: build
+    stage: build
+    image_name: spring-boot-2-example-app
+    working_directory: ./
+    tag: 'latest'
+    dockerfile: Dockerfile
