@@ -1,0 +1,14 @@
+version: "1.0"
+steps:
+  main_clone:
+    type: "git-clone"
+    description: "Cloning main repository..."
+    repo: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
+    revision: "${{CF_BRANCH}}"
+  print_files:
+    title: 'Listing files'
+    image: alpine:3.11
+    commands:
+        - 'pwd'
+        - 'ls -l'
+ 
