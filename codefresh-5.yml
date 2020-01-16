@@ -1,0 +1,59 @@
+version: "1.0"
+stages:
+  - prepare
+  - test
+  - build
+  - 'integration test'  
+steps:
+  main_clone:
+    type: "git-clone"
+    stage: prepare
+    description: "Cloning main repository..."
+    repo: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
+    revision: "${{CF_BRANCH}}"
+  read_mvn_coords:
+    title: Reading Maven coordinates
+    stage: prepare
+    type: kostis-codefresh/mvn-version
+    arguments:
+      POM_XML_FOLDER: './codefresh-java-workshop'
+  get_app_version:
+    title: Getting app version
+    stage: prepare
+    image: stedolan/jq:master
+    commands:
+      - echo $MVN_COORDS
+      - cf_export APP_VERSION=$(echo $MVN_COORDS | jq  -r .version)
+  run_unit_tests:
+    title: Compile/Unit test
+    stage: test
+    image: 'maven:3.5.2-jdk-8-alpine'
+    commands:
+      - mvn -Dmaven.repo.local=/codefresh/volume/m2_repository package
+  build_app_image:
+    title: Building Docker Image
+    type: build
+    stage: build
+    image_name: spring-boot-2-example-app
+    working_directory: ./
+    tag: '${{APP_VERSION}}'
+    dockerfile: Dockerfile
+  run_integration_tests:
+    title: Integration test
+    stage: 'integration test'
+    image: maven:3.5.2-jdk-8-alpine
+    commands:
+     - mvn -Dmaven.repo.local=/codefresh/volume/m2_repository verify -Dserver.host=http://my-spring-app
+    services:
+      composition:
+        my-spring-app:
+          image: '${{build_app_image}}'
+          ports:
+            - 8080
+      readiness:
+        timeoutSeconds: 30
+        periodSeconds: 20
+        failureThreshold: 4
+        image: byrnedo/alpine-curl
+        commands:
+          - "curl http://my-spring-app:8080/"
