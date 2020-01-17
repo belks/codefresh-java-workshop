@@ -3,7 +3,7 @@ stages:
   - prepare
   - test
   - build
-  - 'integration test'  
+  - 'integration test'
 steps:
   main_clone:
     type: "git-clone"
@@ -30,7 +30,7 @@ steps:
     stage: 'integration test'
     image: maven:3.5.2-jdk-8-alpine
     commands:
-     - mvn -Dmaven.repo.local=/codefresh/volume/m2_repository verify -Dserver.host=http://my-spring-app
+      - mvn -Dmaven.repo.local=/codefresh/volume/m2_repository verify -Dserver.host=http://my-spring-app
     services:
       composition:
         my-spring-app:

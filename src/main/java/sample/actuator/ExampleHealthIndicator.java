@@ -23,9 +23,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExampleHealthIndicator implements HealthIndicator {
 
-	@Override
-	public Health health() {
-		return Health.up().withDetail("counter", 42).build();
-	}
+    @Override
+    public Health health() {
+        return Health.up().withDetail("counter", 42).build();
+    }
 
 }

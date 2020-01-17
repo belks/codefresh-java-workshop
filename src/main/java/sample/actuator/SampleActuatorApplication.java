@@ -27,20 +27,20 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(ServiceProperties.class)
 public class SampleActuatorApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SampleActuatorApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SampleActuatorApplication.class, args);
+    }
 
-	@Bean
-	public HealthIndicator helloHealthIndicator() {
-		return new HealthIndicator() {
+    @Bean
+    public HealthIndicator helloHealthIndicator() {
+        return new HealthIndicator() {
 
-			@Override
-			public Health health() {
-				return Health.up().withDetail("hello", "world").build();
-			}
+            @Override
+            public Health health() {
+                return Health.up().withDetail("hello", "world").build();
+            }
 
-		};
-	}
+        };
+    }
 
 }

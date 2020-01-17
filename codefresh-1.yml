@@ -9,6 +9,6 @@ steps:
     title: 'Listing files'
     image: alpine:3.11
     commands:
-        - 'pwd'
-        - 'ls -l'
+      - 'pwd'
+      - 'ls -l'
  
